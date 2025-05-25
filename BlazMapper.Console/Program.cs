@@ -1,4 +1,5 @@
 ﻿using BlazMapper;
+using BlazMapper.DomainSample.ValueObjects;
 
 Console.WriteLine("🚀 BlazMapper - Exemplos de Uso");
 Console.WriteLine("================================\n");
@@ -83,6 +84,39 @@ Console.WriteLine($"Original: {productSource.Name}, R$ {productSource.Price:F2},
 Console.WriteLine($"Record:   {productRecord.Name}, R$ {productRecord.Price:F2}, {productRecord.Category}");
 Console.WriteLine();
 
+// Exemplo 6: Mapeamento com ValueObjects
+Console.WriteLine("💎 Exemplo 6: Mapeamento com ValueObjects");
+Console.WriteLine("----------------------------------------");
+
+var personWithCompleteName = new PersonWithCompleteName
+{
+    Id = 1,
+    Name = new CompleteName("Carlos Eduardo Santos"),
+    Age = 42,
+    Department = "Arquitetura"
+};
+
+var personDto = personWithCompleteName.MapTo<PersonWithCompleteName, PersonWithCompleteNameDto>();
+
+Console.WriteLine($"Original: ID={personWithCompleteName.Id}, Nome={personWithCompleteName.Name.FullName}");
+Console.WriteLine($"         Primeiro: {personWithCompleteName.Name.FirstName}, Último: {personWithCompleteName.Name.LastName}");
+Console.WriteLine($"         Idade: {personWithCompleteName.Age}, Depto: {personWithCompleteName.Department}");
+Console.WriteLine($"Mapeado:  ID={personDto.Id}, Nome={personDto.Name.FullName}");
+Console.WriteLine($"         Primeiro: {personDto.Name.FirstName}, Último: {personDto.Name.LastName}");
+Console.WriteLine($"         Idade: {personDto.Age}, Depto: {personDto.Department}");
+Console.WriteLine();
+
+// Exemplo 7: ValueObject para String (conversão implícita)
+Console.WriteLine("🔄 Exemplo 7: ValueObject para String");
+Console.WriteLine("------------------------------------");
+
+var personWithStringName = personWithCompleteName.MapTo<PersonWithCompleteName, PersonWithSimpleName>();
+
+Console.WriteLine($"ValueObject: {personWithCompleteName.Name.FullName}");
+Console.WriteLine($"String:      {personWithStringName.Name}");
+Console.WriteLine($"Conversão implícita funcionou: {personWithCompleteName.Name.FullName == personWithStringName.Name}");
+Console.WriteLine();
+
 Console.WriteLine("✅ Todos os exemplos executados com sucesso!");
 Console.WriteLine("\n💡 Pressione qualquer tecla para sair...");
 Console.ReadKey();
@@ -137,7 +171,7 @@ public class PersonWithAddressDto
     public AddressDto Address { get; set; } = new();
 }
 
-// Exemplo 4: Employee
+// Exemplo 4: Empregado
 public class Employee
 {
     public string Name { get; set; } = string.Empty;
@@ -145,7 +179,7 @@ public class Employee
     public string Department { get; set; } = string.Empty;
 }
 
-// Exemplo 5: Product
+// Exemplo 5: Produto
 public class ProductSource
 {
     public string Name { get; set; } = string.Empty;
@@ -155,3 +189,27 @@ public class ProductSource
 
 public record ProductRecord(string Name, decimal Price, string Category);
 
+// Exemplo 6: Classes com ValueObjects
+public class PersonWithCompleteName
+{
+    public int Id { get; set; }
+    public CompleteName Name { get; set; } = new("Unknown Person");
+    public int Age { get; set; }
+    public string Department { get; set; } = string.Empty;
+}
+
+public class PersonWithCompleteNameDto
+{
+    public int Id { get; set; }
+    public CompleteName Name { get; set; } = new("Unknown Person");
+    public int Age { get; set; }
+    public string Department { get; set; } = string.Empty;
+}
+
+public class PersonWithSimpleName
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Age { get; set; }
+    public string Department { get; set; } = string.Empty;
+}

@@ -18,7 +18,7 @@ namespace BlazMapper
                                       .OrderByDescending(c => c.GetParameters().Length)
                                       .ToList();
 
-            // Se só houver um construtor com parametros, mapaer atribuito -> parametro
+            // Se só houver 1 construtor com parametros, mapaer atribuito -> parametro
             if (constructors.Any() && constructors[0].GetParameters().Length > 0)
             {
                 return MapToImmutableObject<TSource, TDestination>(source, constructors);
@@ -144,6 +144,12 @@ namespace BlazMapper
 
             var sourceType = typeof(TSource);
             var sourceProps = sourceType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            if (!sourceProps.Any() && sourceType.Name.Contains("AnonymousType") || sourceType == typeof(object))
+            {
+                sourceProps = source.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            }
+
             var destProps = destType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 
             foreach (var destProp in destProps)
@@ -159,13 +165,13 @@ namespace BlazMapper
                     var value = sourceProp.GetValue(source);
                     if (value != null)
                     {
-                        if (destProp.PropertyType.IsAssignableFrom(sourceProp.PropertyType))
-                        {
-                            destProp.SetValue(destination, value);
-                        }
-                        else if (TryImplicitConversion(value, destProp.PropertyType, out var convertedValue))
+                        if (TryImplicitConversion(value, destProp.PropertyType, out var convertedValue))
                         {
                             destProp.SetValue(destination, convertedValue);
+                        }
+                        else if (destProp.PropertyType.IsAssignableFrom(sourceProp.PropertyType))
+                        {
+                            destProp.SetValue(destination, value);
                         }
                         else if (!sourceProp.PropertyType.IsPrimitive &&
                                 !sourceProp.PropertyType.Namespace.StartsWith("System"))
@@ -201,7 +207,7 @@ namespace BlazMapper
                     m.Name == "op_Implicit" &&
                     m.ReturnType == destinationType &&
                     m.GetParameters().Length == 1 &&
-                    m.GetParameters()[0].ParameterType == sourceType);
+                    m.GetParameters()[0].ParameterType.IsAssignableFrom(sourceType));
 
             if (methodSource != null)
             {
@@ -214,7 +220,7 @@ namespace BlazMapper
                     m.Name == "op_Implicit" &&
                     m.ReturnType == destinationType &&
                     m.GetParameters().Length == 1 &&
-                    m.GetParameters()[0].ParameterType == sourceType);
+                    m.GetParameters()[0].ParameterType.IsAssignableFrom(sourceType));
 
             if (methodDest != null)
             {
@@ -222,6 +228,27 @@ namespace BlazMapper
                 return true;
             }
 
+            var allDestMethods = destinationType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.Name == "op_Implicit" && m.ReturnType == destinationType && m.GetParameters().Length == 1);
+
+            foreach (var method in allDestMethods)
+            {
+                var paramType = method.GetParameters()[0].ParameterType;
+                if (paramType.IsAssignableFrom(sourceType))
+                {
+                    try
+                    {
+                        result = method.Invoke(null, new[] { source });
+                        return true;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            // Se Convert.ChangeType não rolar...
             try
             {
                 if (destinationType.IsValueType || destinationType == typeof(string))
