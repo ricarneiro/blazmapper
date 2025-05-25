@@ -7,7 +7,7 @@
 
 		<!-- Configurações do Pacote NuGet -->
 		<PackageId>BlazMapper</PackageId>
-		<Version>0.0.2</Version>
+		<Version>0.0.3</Version>
 		<Authors>RiCarneiro</Authors>
 		<Company>JobMaker</Company>
 		<Description>Uma biblioteca simples e eficiente para mapeamento de objetos em .NET, suportando tanto objetos mutáveis quanto imutáveis com construtor parametrizado.</Description>

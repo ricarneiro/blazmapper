@@ -111,6 +111,64 @@ namespace BlazMapper.Tests
             Assert.Equal(complexSource.Address.ZipCode, complexDestination.Address.ZipCode);
         }
 
+        [Fact]
+        public void MapTo_ComplexObjects_WithDifferentPropsTypesShouldMapNestedProperties()
+        {
+            // Arrange
+            var complexSource = new PersonWithAddress
+            {
+                Name = "Pedro Costa",
+                Age = 35,
+                Address = new Address
+                {
+                    Street = "Rua das Flores, 123",
+                    City = "São Paulo",
+                    ZipCode = "01234-567"
+                }
+            };
+
+            // Act
+            var complexDestination = complexSource.MapTo<PersonWithAddress, PersonWithAddressDtoAgeDiff>();
+
+            // Assert
+            Assert.NotNull(complexDestination);
+            Assert.Equal(complexSource.Name, complexDestination.Name);
+            Assert.Equal(complexDestination.Age, "35");
+            Assert.NotNull(complexDestination.Address);
+            Assert.Equal(complexSource.Address.Street, complexDestination.Address.Street);
+            Assert.Equal(complexSource.Address.City, complexDestination.Address.City);
+            Assert.Equal(complexSource.Address.ZipCode, complexDestination.Address.ZipCode);
+        }
+
+        [Fact]
+        public void MapTo_ComplexObjects_WithDifferentPropsTypesFromShouldMapNestedProperties()
+        {
+            // Arrange
+            var complexSource = new PersonWithAddressDtoAgeDiff
+            {
+                Name = "Pedro Costa",
+                Age = "35",
+                Address = new AddressDto
+                {
+                    Street = "Rua das Flores, 123",
+                    City = "São Paulo",
+                    ZipCode = "01234-567"
+                }
+            };
+
+            // Act
+            var complexDestination = complexSource.MapTo<PersonWithAddressDtoAgeDiff, PersonWithAddress>();
+
+            // Assert
+            Assert.NotNull(complexDestination);
+            Assert.Equal(complexSource.Name, complexDestination.Name);
+            Assert.Equal(complexDestination.Age, 35);
+            Assert.NotNull(complexDestination.Address);
+            Assert.Equal(complexSource.Address.Street, complexDestination.Address.Street);
+            Assert.Equal(complexSource.Address.City, complexDestination.Address.City);
+            Assert.Equal(complexSource.Address.ZipCode, complexDestination.Address.ZipCode);
+        }
+
         #endregion
 
         #region Value Object Mapping Tests
@@ -302,6 +360,13 @@ namespace BlazMapper.Tests
     {
         public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
+        public AddressDto Address { get; set; } = new();
+    }
+
+    public class PersonWithAddressDtoAgeDiff
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Age { get; set; }
         public AddressDto Address { get; set; } = new();
     }
 
