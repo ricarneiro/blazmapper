@@ -13,11 +13,11 @@ Mapeador de objetos simples e eficiente para .NET*
 
 (Português)
 Clique no seu idioma preferido abaixo.
-O triângulo (acima do idioma) exibe/esconde o texto.
+O triângulo (próximo do idioma) exibe/esconde o texto.
 
 (English)
 Click on your preferred language below:
-The triangle (above the language) shows/hides the text.
+The triangle (near by language) shows/hides the text.
 
 [![English](https://img.shields.io/badge/Language-English-blue)](#english) [![Português](https://img.shields.io/badge/Idioma-Português-green)](#portugues) [![NuGet](https://img.shields.io/nuget/v/BlazMapper.svg)](https://www.nuget.org/packages/BlazMapper) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
