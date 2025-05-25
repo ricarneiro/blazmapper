@@ -10,10 +10,10 @@ param(
 
 # ⚠️ SEGURANÇA: Nunca commite API Keys no repositório público!
 
-Write-Host "🚀 Iniciando build do BlazMapper..." -ForegroundColor Green
+Write-Host "Iniciando build do BlazMapper..." -ForegroundColor Green
 
 # Limpar builds anteriores
-Write-Host "🧹 Limpando builds anteriores..." -ForegroundColor Yellow
+Write-Host "Limpando builds anteriores..." -ForegroundColor Yellow
 dotnet clean --configuration $Configuration
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Falha ao limpar o projeto"
@@ -21,7 +21,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Restaurar dependências
-Write-Host "📦 Restaurando dependências..." -ForegroundColor Yellow
+Write-Host "Restaurando dependências..." -ForegroundColor Yellow
 dotnet restore
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Falha ao restaurar dependências"
@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Build do projeto
-Write-Host "🔨 Fazendo build do projeto..." -ForegroundColor Yellow
+Write-Host "Fazendo build do projeto..." -ForegroundColor Yellow
 dotnet build --configuration $Configuration --no-restore
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Falha no build do projeto"
@@ -38,7 +38,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Executar testes (se existirem)
 if (Test-Path "*.Tests") {
-    Write-Host "🧪 Executando testes..." -ForegroundColor Yellow
+    Write-Host "Executando testes..." -ForegroundColor Yellow
     dotnet test --configuration $Configuration --no-build --verbosity normal
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Testes falharam"
@@ -47,13 +47,13 @@ if (Test-Path "*.Tests") {
 }
 
 # Criar pacote NuGet
-Write-Host "📦 Criando pacote NuGet..." -ForegroundColor Yellow
+Write-Host "Criando pacote NuGet..." -ForegroundColor Yellow
 
 $packCommand = "dotnet pack --configuration $Configuration --no-build --output ./nupkg"
 
 if ($Version -ne "") {
     $packCommand += " --version-suffix $Version"
-    Write-Host "📌 Usando versão: $Version" -ForegroundColor Cyan
+    Write-Host "Usando versão: $Version" -ForegroundColor Cyan
 }
 
 Invoke-Expression $packCommand
@@ -63,7 +63,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Listar pacotes criados
-Write-Host "📋 Pacotes criados:" -ForegroundColor Green
+Write-Host "Pacotes criados:" -ForegroundColor Green
 Get-ChildItem -Path "./nupkg" -Filter "*.nupkg" | ForEach-Object {
     Write-Host "  - $($_.Name)" -ForegroundColor Cyan
 }
@@ -82,10 +82,10 @@ if ($Push) {
         }
     }
     
-    Write-Host "🚀 Fazendo push para NuGet..." -ForegroundColor Yellow
+    Write-Host "Fazendo push para NuGet..." -ForegroundColor Yellow
     
     Get-ChildItem -Path "./nupkg" -Filter "*.nupkg" | ForEach-Object {
-        Write-Host "📤 Enviando $($_.Name)..." -ForegroundColor Cyan
+        Write-Host "Enviando $($_.Name)..." -ForegroundColor Cyan
         dotnet nuget push $_.FullName --api-key $ApiKey --source $Source
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Falha ao enviar $($_.Name)"
@@ -93,9 +93,9 @@ if ($Push) {
         }
     }
     
-    Write-Host "✅ Pacote enviado com sucesso!" -ForegroundColor Green
+    Write-Host "Pacote enviado com sucesso!" -ForegroundColor Green
 } else {
-    Write-Host "💡 Para enviar para NuGet, use: .\build-and-pack.ps1 -Push -ApiKey 'sua-api-key'" -ForegroundColor Yellow
+    Write-Host "Para enviar para NuGet, use: .\build-and-pack.ps1 -Push -ApiKey 'sua-api-key'" -ForegroundColor Yellow
 }
 
-Write-Host "✅ Build concluído com sucesso!" -ForegroundColor Green
+Write-Host "Build concluído com sucesso!" -ForegroundColor Green
