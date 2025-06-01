@@ -7,13 +7,13 @@
 
 		<!-- Configurações do Pacote NuGet -->
 		<PackageId>BlazMapper</PackageId>
-		<Version>0.0.2</Version>
+		<Version>0.0.4</Version>
 		<Authors>RiCarneiro</Authors>
 		<Company>JobMaker</Company>
 		<Description>Uma biblioteca simples e eficiente para mapeamento de objetos em .NET, suportando tanto objetos mutáveis quanto imutáveis com construtor parametrizado.</Description>
 		<PackageTags>mapper;mapping;object-mapping;blazmapper;dotnet</PackageTags>
-		<RepositoryUrl>https://github.com/seuusuario/BlazMapper</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/seuusuario/BlazMapper</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ricarneiro/blazmapper</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/ricarneiro/blazmapper</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>icon.png</PackageIcon>

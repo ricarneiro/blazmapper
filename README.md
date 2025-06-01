@@ -13,11 +13,11 @@ Mapeador de objetos simples e eficiente para .NET*
 
 (Português)
 Clique no seu idioma preferido abaixo.
-O triângulo (próximo do idioma) exibe/esconde o texto.
+O triângulo (acima do idioma) exibe/esconde o texto.
 
 (English)
 Click on your preferred language below:
-The triangle (near by language) shows/hides the text.
+The triangle (above the language) shows/hides the text.
 
 [![English](https://img.shields.io/badge/Language-English-blue)](#english) [![Português](https://img.shields.io/badge/Idioma-Português-green)](#portugues) [![NuGet](https://img.shields.io/nuget/v/BlazMapper.svg)](https://www.nuget.org/packages/BlazMapper) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -115,6 +115,84 @@ var source = new Person
 };
 
 var destination = source.MapTo<Person, PersonDto>();
+```
+
+#### Mapping with Value Objects
+```csharp
+public class CompleteName : AValueObject
+{
+    public CompleteName(string fullName)
+    {
+        this.FullName = fullName;
+        var names = fullName.Split(' ');
+        if (names.Length >= 2)
+        {
+            this.FirstName = names[0];
+            this.LastName = names[names.Length - 1];
+        }
+        else
+        {
+            this.FirstName = fullName;
+            this.LastName = string.Empty;
+        }
+        GetValidationExpression();
+    }
+
+    public CompleteName(string firstName, string lastName)
+    {
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.FullName = $"{firstName} {lastName}";
+        GetValidationExpression();
+    }
+
+    public string FullName { get; private set; } = string.Empty;
+    public string FirstName { get; private set; } = string.Empty;
+    public string LastName { get; private set; } = string.Empty;
+
+    public override bool GetValidationExpression()
+    {
+        return this.IsValid = this.IsValidName(FullName);
+    }
+
+    public override string ToString()
+    {
+        return this.FullName;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.FullName;
+    }
+
+    private bool IsValidName(string fullName)
+    {
+        return !string.IsNullOrWhiteSpace(fullName) && fullName.Contains(' ');
+    }
+
+    public static implicit operator string(CompleteName name) => name.FullName;
+    public static implicit operator CompleteName(string fullname) => new CompleteName(fullname);
+}
+
+
+public class PersonWithCompleteName
+{
+    public int Id { get; set; }
+    public CompleteName Name { get; set; } = new("Unknown Person");
+    public int Age { get; set; }
+    public string Department { get; set; } = string.Empty;
+}
+
+var source = new PersonWithStringName
+{
+    Id = 1,
+    Name = "Ana Costa",
+    Age = 28
+};
+
+// BlazMapper automatically maps value objects
+var destination = source.MapTo<PersonWithStringName, PersonWithCompleteName>();
+
 ```
 
 ## 🔍 How It Works
@@ -241,6 +319,85 @@ var source = new Person
 
 var destination = source.MapTo<Person, PersonDto>();
 ```
+
+#### Mapeando para Value Objects
+```csharp
+public class CompleteName : AValueObject
+{
+    public CompleteName(string fullName)
+    {
+        this.FullName = fullName;
+        var names = fullName.Split(' ');
+        if (names.Length >= 2)
+        {
+            this.FirstName = names[0];
+            this.LastName = names[names.Length - 1];
+        }
+        else
+        {
+            this.FirstName = fullName;
+            this.LastName = string.Empty;
+        }
+        GetValidationExpression();
+    }
+
+    public CompleteName(string firstName, string lastName)
+    {
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.FullName = $"{firstName} {lastName}";
+        GetValidationExpression();
+    }
+
+    public string FullName { get; private set; } = string.Empty;
+    public string FirstName { get; private set; } = string.Empty;
+    public string LastName { get; private set; } = string.Empty;
+
+    public override bool GetValidationExpression()
+    {
+        return this.IsValid = this.IsValidName(FullName);
+    }
+
+    public override string ToString()
+    {
+        return this.FullName;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.FullName;
+    }
+
+    private bool IsValidName(string fullName)
+    {
+        return !string.IsNullOrWhiteSpace(fullName) && fullName.Contains(' ');
+    }
+
+    public static implicit operator string(CompleteName name) => name.FullName;
+    public static implicit operator CompleteName(string fullname) => new CompleteName(fullname);
+}
+
+
+public class PersonWithCompleteName
+{
+    public int Id { get; set; }
+    public CompleteName Name { get; set; } = new("Unknown Person");
+    public int Age { get; set; }
+    public string Department { get; set; } = string.Empty;
+}
+
+var source = new PersonWithStringName
+{
+    Id = 1,
+    Name = "Ana Costa",
+    Age = 28
+};
+
+// BlazMapper automatically maps value objects
+var destination = source.MapTo<PersonWithStringName, PersonWithCompleteName>();
+
+```
+
 
 ## 🔍 Como Funciona
 
