@@ -219,6 +219,7 @@ Contributions are welcome! Feel free to:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
+- [Is it helps? Wanna pay a coffee?](https://www.paypal.com/donate/?business=XKGV237MQVRK8&no_recurring=0&item_name=Ajudou?+Clique+aqui+para+me+pagar+um+caf%C3%A9%21&currency_code=BRL)]
 - [GitHub Repository](https://github.com/ricarneiro/blazmapper)
 - [NuGet Package](https://www.nuget.org/packages/BlazMapper)
 
@@ -423,6 +424,7 @@ Contribuições são bem-vindas! Sinta-se à vontade para:
 Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## 🔗 Links
+- [Ajudei? Quer me pagar um café?](https://www.paypal.com/donate/?business=XKGV237MQVRK8&no_recurring=0&item_name=Ajudou?+Clique+aqui+para+me+pagar+um+caf%C3%A9%21&currency_code=BRL)]
 - [Repositório GitHub](https://github.com/ricarneiro/blazmapper)
 - [Pacote NuGet](https://www.nuget.org/packages/BlazMapper)
 
